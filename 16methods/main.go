@@ -18,6 +18,11 @@ func (u User) NewMail() {
 	fmt.Println("Email of this user is:", u.Email)
 }
 
+// func with parameters
+func sayHello(u User) {
+	fmt.Println("Hello", u.Name)
+}
+
 func main() {
 	fmt.Println("Methods in Golang")
 
@@ -40,4 +45,7 @@ func main() {
 	mohaimen.NewMail() // prints => Email of this user is:
 
 	fmt.Println("Email of this user is:", mohaimen.Email) // prints => Email of this user is:
+
+	fmt.Println("Say Hello Function: ")// prints => User:  Hello Mohaimen
+	sayHello(mohaimen)
 }
