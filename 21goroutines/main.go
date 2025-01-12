@@ -9,6 +9,10 @@ import (
 var wg sync.WaitGroup // wait group is used to wait for the go routines to finish
 // this is generally pointer
 
+var mut sync.Mutex // mutex is used to lock the code, so that only one go routine can access the code at a time
+
+var signals = []string{}
+
 func main() {
 	// greeter("Hello")
 	// greeter("World")
@@ -32,6 +36,8 @@ func main() {
 		"https://www.google.com",
 		"https://www.facebook.com",
 		"https://www.twitter.com",
+		"https://www.golang.org",
+		"https://www.github.com",
 	}
 
 	for _, website := range websiteLists {
@@ -42,6 +48,7 @@ func main() {
 	}
 
 	wg.Wait() // wait for all the go routines to finish, it is called to the end of the main function to wait for all the go routines to finish
+	fmt.Println(signals)
 }
 
 // func greeter(s string) {
@@ -51,14 +58,18 @@ func main() {
 // 	}
 // }
 
-func getStatusCode(endoint string) {
-	req, err := http.Get(endoint)
+func getStatusCode(endpoint string) {
+	req, err := http.Get(endpoint)
 
 	if err != nil {
 		fmt.Println("Error", err)
 	}
 
-	fmt.Printf("%d status code for website %s\n", req.StatusCode, endoint)
+	mut.Lock() // lock the memory, so that only one go routine can access the memory at a time
+	signals = append(signals, endpoint)
+	mut.Unlock() // unlock the memory, it is necessary to unlock the memory just after writing is done, otherwise it will be locked forever
+
+	fmt.Printf("%d status code for website %s\n", req.StatusCode, endpoint)
 
 	wg.Done() // this will be called when the go routine is finished, need to add it manually
 }
